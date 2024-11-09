@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/netlify-lambda serve",
-    "build": "./node_modules/.bin/netlify-lambda build"
+    "start": "node index.js",
+    "build": "netlify-lambda build",
+    "deploy": "netlify deploy --prod"
   },
   "author": "",
   "license": "ISC",
