@@ -1,17 +1,10 @@
-const express = require('express')
-const app = express()
-const port = 80
+const express = require('express');
+const app = express();
+const mainRoutes = require('./routes');
 
+app.use('/', mainRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-app.post('/products', (req, res) => {
-    const {name, price} = req.body
-    res.send(`Product ${name} with price ${price} has been created`)
-})
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
