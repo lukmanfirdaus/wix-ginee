@@ -1,9 +1,9 @@
 const { Router } = require('express');
 const router = Router();
+const orderController = require('../../controller/order_controller');
 
-router.post('/orders', (req, res) => {
-    const {name, price} = req.body
-    res.send(`Order ${name} with price ${price} has been created`)
+router.get('/', (req, res) => {
+    orderController.createOrder(req, res);
 })
 
 module.exports = router;

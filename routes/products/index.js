@@ -7,7 +7,7 @@ router.post('/', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-    productController.createProduct(req, res);
+    productController.getProduct(req, res);
 });
 
 module.exports = router;

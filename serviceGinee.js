@@ -28,18 +28,19 @@ const prepareHeaders = (requestUri) => {
 };
 
 // Send the HTTP request using the fetch API
-const sendRequest = async (requestUri, paramJson) => {
+const sendRequest = async (requestUri, method = httpMethod, paramJson = null) => {
   const headers = prepareHeaders(requestUri);
   try {
-    const response = await fetch(requestHost + requestUri, {
-      method: httpMethod,
+    const payload = {
+      method: method,
       headers: headers,
-      body: paramJson,
-    });
-
-    // Parse the response if needed
+    }
+    if (paramJson !== null) {
+      payload.body = paramJson;
+    }
+    console.log(payload);
+    const response = await fetch(requestHost + requestUri, payload);
     const data = await response.json();
-    console.log(data);
 		return data;
   } catch (error) {
     console.error('Error:', error);
