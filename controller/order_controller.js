@@ -1,27 +1,27 @@
-const sendRequest = require('../serviceGinee');
+const sendRequest = require("../serviceGinee");
 
 const orderController = {
-	createOrder: async (req, res) => {
-		const requestUri = '/openapi/order/v1/create-manual-order';
-        const wixProductData = `{
+  createOrder: async (req, res) => {
+    const requestUri = "/openapi/order/v1/create-manual-order";
+    const wixOrderData = `{
             "invoices": [],
             "payments": [
-                {
+              {
                 "amount": {
-                    "value": "238980.0",
-                    "currency": "IDR"
+                  "value": "238980.0",
+                  "currency": "IDR"
                 },
                 "creditCardLastDigits": "",
                 "_id": "1ab6f8c1-b1a1-43bc-9f7d-9504f9eefb1e",
                 "_createdDate": "2024-11-11T10:10:32.799Z"
-                }
+              }
             ],
             "orderNumber": "10008",
             "purchaseFlowId": "60c668f4-54cb-4397-b8f0-d1f3df259ecb",
             "lineItems": [
                 {
                 "quantity": 1,
-                "sku": "",
+                "sku": "8809625870119",
                 "image": "https://static.wixstatic.com/media/092bde_64ff8526b5e24c8c8b0bfd831f303377~mv2.jpg/v1/fit/w_640,h_640,q_90/file.jpg",
                 "totalPriceBeforeTax": {
                     "value": "198980.00",
@@ -79,13 +79,13 @@ const orderController = {
                     "lastName": "firdaus",
                     "phone": "082258012365"
                     }
-                }
+                  }
                 },
                 "carrierId": "86575bcf-6208-44ba-8c84-c92ebd6f2f10",
                 "region": "국내",
                 "totalTax": {
-                "value": "0.00",
-                "currency": "IDR"
+                  "value": "0.00",
+                  "currency": "IDR"
                 },
                 "title": "JNE Trucking"
             },
@@ -198,82 +198,90 @@ const orderController = {
             "buyerLanguage": "id",
             "_id": "a1589b9d-653f-4d67-b56b-f2999d60560c",
             "_createdDate": "2024-11-11T10:10:31.679Z"
-            }`;
-        const productData = `{
-            "externalOrderSn": "1581170997811",
-            "customerName": "15811709978",
-            "customerMobile": "+6215811709978",
-            "customerEmail": "15811709978@qq.com",
-            "shopId": "SH659B7927CFF47E00019E7104",
-            "logisticsInfos": [
-                {
-                    "logisticsProviderName": "Ninja Van ID Express",
-                    "logisticsTrackingNumber": ""
-                }
-            ],
-            "noteByBuyer": "15811709978",
-            "mobileCountry": "ID",
-            "shippingAddress": {
-                "name": "15811709978",
-                "phoneNumber": "+6215811709978",
-                "zipCode": "15811709978",
-                "fullAddress": "15811709978",
-                "id": "OAI633055A95908010001C4005E",
-                "mobileCountry": "ID",
-                "country": "Indonesia",
-                "province": "Bali",
-                "city": "Buleleng",
-                "district": "Sawan"
-            },
-            "senderAddress": {
-                "name": "15811709978",
-                "phoneNumber": "+6215811709978",
-                "zipCode": "15811709978",
-                "fullAddress": "15811709978",
-                "country": "Indonesia",
-                "province": "Bali",
-                "city": "Buleleng",
-                "district": "Sawan"
-            },
-            "orderItems": [
-                {
-                    "sku": "8809625870119",
-                    "id": "WW658D3976C9E77C00014C7E39",
-                    "warehouseId": "WW658D3976C9E77C00014C7E39",
-                    "warehouseName": "Direct Sales_B2C",
-                    "warehouseCode": "WH0295",
-                    "weight": 4,
-                    "actualPrice": 11,
-                    "quantity": 1
-                }
-            ],
-            "orderPayment": {
-                "totalShippingFee": 1,
-                "totalDiscounts": 1,
-                "taxationFee": 1,
-                "insuranceFee": 1,
-                "serviceFee": 11,
-                "commissionFee": 1,
-                "currency": "IDR"
-            },
-            "payAmount": 1,
-            "payAtDatetime": "2022-09-20T16:00:01.000Z",
-            "paymentMethod": "PREPAY",
-            "payRecords": [
-                {
-                    "payAtDatetime": "2024-03-31T03:55:28.669Z",
-                    "payAmount": "3000",
-                    "paySerialNumber": "15811709978",
-                    "payAccountNumber": "VB1234567890",
-                    "receiptAccountNumber": "VB1234567890",
-                    "payRecordNote": "Fully paid"
-                }
-            ],
-            "noteBySeller": "15811709978"
-        }`;
-		const data = await sendRequest(requestUri, 'POST', productData);
-		res.send(data);
-	},
+    }`;
+    const parseData = JSON.parse(wixOrderData);
+    const orderData = `{
+			"externalOrderSn": "1581170997849",
+			"customerName": "${parseData.contact.name.first} ${parseData.contact.name.last}",
+			"customerMobile": "${parseData.shippingInfo.logistics.shippingDestination.contactDetails.phone}",
+			"customerEmail": "${parseData.contact.email}",
+			"shopId": "SH659B7927CFF47E00019E7104",
+			"logisticsInfos": [
+				{
+					"logisticsProviderName": "${parseData.shippingInfo.title}",
+					"logisticsTrackingNumber": ""
+				}
+			],
+			"noteByBuyer": "15811709978",
+			"mobileCountry": "${parseData.shippingInfo.logistics.shippingDestination.address.country}",
+			"shippingAddress": {
+				"name": "
+          ${parseData.shippingInfo.logistics.shippingDestination.contactDetails.firstName}
+          ${parseData.shippingInfo.logistics.shippingDestination.contactDetails.lastName}
+        ",
+				"phoneNumber": "${parseData.shippingInfo.logistics.shippingDestination.contactDetails.phone}",
+				"zipCode": "${parseData.shippingInfo.logistics.shippingDestination.address.postalCode}",
+        "fullAddress": "
+          ${parseData.shippingInfo.logistics.shippingDestination.address.addressLine},
+          ${parseData.shippingInfo.logistics.shippingDestination.address.city}, 
+          ${parseData.shippingInfo.logistics.shippingDestination.address.subdivisionFullname},
+          ${parseData.shippingInfo.logistics.shippingDestination.address.countryFullname}
+        ",
+				"id": "OAI633055A95908010001C4005E",
+				"mobileCountry": "${parseData.shippingInfo.logistics.shippingDestination.address.country}",
+				"country": "${parseData.shippingInfo.logistics.shippingDestination.address.countryFullname}",
+				"province": "${parseData.shippingInfo.logistics.shippingDestination.address.subdivisionFullname}",
+				"city": "${parseData.shippingInfo.logistics.shippingDestination.address.city}",
+				"district": "${parseData.shippingInfo.logistics.shippingDestination.address.addressLine}"
+			},
+			"senderAddress": {
+				"name": "15811709978",
+				"phoneNumber": "+6215811709978",
+				"zipCode": "15811709978",
+				"fullAddress": "15811709978",
+				"country": "Indonesia",
+				"province": "Bali",
+				"city": "Buleleng",
+				"district": "Sawan"
+			},
+			"orderItems": ${JSON.stringify(
+        parseData.lineItems.map((item) => ({
+          sku: item.sku,
+          id: item._id,
+          warehouseId: "WW658D3976C9E77C00014C7E39",
+          warehouseName: "Direct Sales_B2C",
+          warehouseCode: "WH0295",
+          weight: item.quantity,
+          actualPrice: parseFloat(item.totalPriceBeforeTax.value),
+          quantity: item.quantity,
+        }))
+      )},
+			"orderPayment": {
+				"totalShippingFee": "${parseFloat(parseData.shippingInfo.price.value)}",
+				"totalDiscounts": "${parseFloat(parseData.priceSummary.discount.value)}",
+				"taxationFee": "${parseFloat(parseData.priceSummary.tax.value)}",
+				"insuranceFee": 0,
+				"serviceFee": 0,
+				"commissionFee": 0,
+				"currency": "${parseData.priceSummary.total.currency}"
+			},
+			"payAmount": "${parseFloat(parseData.priceSummary.total.value)}",
+			"payAtDatetime": "${parseData._createdDate}",
+			"paymentMethod": "PREPAY",
+			"payRecords": ${JSON.stringify(
+        parseData.payments.map((item) => ({
+					payAtDatetime: item._createdDate,
+					payAmount: parseFloat(item.amount.value),
+					paySerialNumber: "15811709978",
+					payAccountNumber: "VB1234567890",
+					receiptAccountNumber: "VB1234567890",
+					payRecordNote: "Fully paid"
+        }))
+      )},
+			"noteBySeller": "15811709978"
+	  }`;
+    const data = await sendRequest(requestUri, "POST", orderData);
+    res.send(data);
+  },
 };
-
 module.exports = orderController;
