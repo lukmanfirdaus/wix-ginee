@@ -10,4 +10,8 @@ router.get('/', (req, res) => {
     productController.getProduct(req, res);
 });
 
+router.get('/inventory', (req, res) => {
+    productController.getInventory(req, res);
+});
+
 module.exports = router;

@@ -2,13 +2,14 @@ const crypto = require('crypto');
 
 // Define the required parameters
 const requestHost = 'https://api.ginee.com';
-const httpMethod = 'POST';
+let httpMethod = 'POST';
 const accessKey = '01e5c121f99a6a70';
 const secretKey = '5885d824b2e39296';
 const newline = '$';
 
 // Create HMAC SHA256 hash using the secret key and the signature string
 const createSignature = (requestUri, secretKey) => {
+  console.log(httpMethod)
   const signStr = httpMethod + newline + requestUri + newline;
   const hmac = crypto.createHmac('sha256', secretKey);
   hmac.update(signStr);
@@ -29,7 +30,10 @@ const prepareHeaders = (requestUri) => {
 
 // Send the HTTP request using the fetch API
 const sendRequest = async (requestUri, method = httpMethod, paramJson = null) => {
+  httpMethod = method
   const headers = prepareHeaders(requestUri);
+  console.log(requestUri)
+  console.log(requestHost)
   try {
     const payload = {
       method: method,

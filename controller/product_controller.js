@@ -10,6 +10,15 @@ const productController = {
 		});
 		const data = await sendRequest(requestUri, 'POST', paramJson);
 		res.send(data);
+	},
+
+	getInventory: async (req,res) => {
+		const warehouseId = "WI61EFAB237D560D0001A43BEA"
+		
+		const requestUri = `/openapi/warehouse-inventory/v1/sku/get?id=WI61EFAB237D560D0001A43BEA`;
+		
+		const data = await sendRequest(requestUri, 'GET');
+		res.send(data);
 	}
 };
 
