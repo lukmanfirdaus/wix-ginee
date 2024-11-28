@@ -32,14 +32,18 @@ const prepareHeaders = (requestUri) => {
 const sendRequest = async (requestUri, method = httpMethod, paramJson = null) => {
   httpMethod = method
   const headers = prepareHeaders(requestUri);
-  console.log(requestUri)
-  console.log(requestHost)
   try {
+    if (method.toUpperCase() === 'GET' && paramJson !== null) {
+      // Append query parameters to the URL
+      const queryString = new URLSearchParams(paramJson).toString();
+      requestUri += `?${queryString}`;
+    }
     const payload = {
       method: method,
       headers: headers,
     }
-    if (paramJson !== null) {
+    console.log(requestUri)
+    if (method.toUpperCase() !== 'GET' && paramJson !== null) {
       payload.body = paramJson;
     }
     console.log(payload);
